@@ -20,12 +20,12 @@ class UserService:
         """
         user = self.repo.get_user_by_email(user_login.email)
         if not user:
-            raise ValueError("User not found")  # 400 Bad Request
+            raise ValueError("User not found.")  # 400 Bad Request
         if user.password != user_login.password:
             raise ValueError("Invalid ID/PW")  # 400 Bad Request
         return user
 
-    def regiser_user(self, new_user: User) -> User:
+    def register_user(self, new_user: User) -> User:
         """
         Register new user
 
