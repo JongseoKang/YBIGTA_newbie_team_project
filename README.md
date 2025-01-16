@@ -1,5 +1,14 @@
 # YBIGTA_newbie_team_project
 
+## 실행 방법
+```
+git clone https://github.com/JongseoKang/YBIGTA_newbie_team_project
+pip install -r requirements.txt
+cd ./app
+uvicorn main:app --reload
+```
+브라우저를 이용하여 http://127.0.0.1:8000/static/index.html 접속
+
 ## 조장
 
 ![Image](https://github.com/user-attachments/assets/dee773e4-4777-48ae-8377-e5551dce5520)
