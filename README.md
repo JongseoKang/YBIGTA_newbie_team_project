@@ -44,3 +44,17 @@ uvicorn main:app --reload
 LLM, GNN에 관심을 갖고 있습니다.
 
 앞으로 잘 부탁드립니다!
+
+---
+branch_protection.png
+<img width="1440" alt="branch_protection" src="https://github.com/user-attachments/assets/e35daf48-8b7f-4b56-b4bf-b24e915e4045" />
+
+push_rejected.png
+<img width="1440" alt="push_rejected" src="https://github.com/user-attachments/assets/812a28a3-7626-45a6-ace7-1d692e56febe" />
+
+merge_JongseoKang.png
+<img width="1440" alt="merge_JongseoKang" src="https://github.com/user-attachments/assets/d27ed214-5325-400c-ae42-cb6be750754d" />
+
+merge_0haneu1.png
+<img width="1440" alt="merge_0haneu1" src="https://github.com/user-attachments/assets/1f0dd3f6-da04-4e1e-9b05-982c702232d4" />
+
