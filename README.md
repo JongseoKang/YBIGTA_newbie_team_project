@@ -23,7 +23,7 @@
 
 ![image](https://github.com/user-attachments/assets/7537ebb4-4a49-4c8e-8450-341e7755fe9a)
 
-### 이름: 강종서
+### 이름: 박하늘
 
 ### 학번: 20학번
 
