@@ -58,6 +58,21 @@ merge_JongseoKang.png
 merge_0haneu1.png
 <img width="1440" alt="merge_0haneu1" src="https://github.com/user-attachments/assets/1f0dd3f6-da04-4e1e-9b05-982c702232d4" />
 
----
-# 영화 리뷰 데이터 분석
+### EDA/FE 및 시각화
 
+## Dependencies
+```
+pip install pandas gensim konlpy numpy
+brew install openjdk
+```
+
+## 전처리 및 FE 결과
+
+# 전처리
+
+null 값을 포함, 1~10이 아닌 별점 포함 또는 길이 10~60이 아닌 텍스트 포함의 데이터를 삭제하였으며 결과적으로 네이버 리뷰는 163개, 메가박스 리뷰는 463개의 데이터 획득
+
+# FE 추가된 변수
+개봉 이후 시간대 별로 작성된 리뷰의 개수
+
+텍스트 벡터화(word2vec)
