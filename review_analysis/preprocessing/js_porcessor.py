@@ -30,51 +30,65 @@ class JSProcessor(BaseDataProcessor):
         data = data[data["date"] != None]
 
         data = data[data["review"].apply(len) >= 10]
-        data = data[data["review"].apply(len) <= 100]
+        data = data[data["review"].apply(len) <= 60]
 
         self.data = data
     
     def feature_engineering(self):
         '''gen two features, days from released, word embedding'''
         data = self.data
-        
+       
         def parse_date(date_str):
-            '''date parser for two different types'''
-            
-            today = datetime.date(2025, 1, 22)
+            """
+            Calculate the difference in hours from the reference date (2025-01-22 00:00).
+
+            Args:
+                date_str (str): The input date string to calculate hours difference.
+
+            Returns:
+                float: The difference in hours.
+            """
+            # Define the reference datetime
+            reference_date = datetime.datetime(2025, 1, 22, 0, 0)
+
+            # Parse the input date string
             try:
-                # Try type1 format
-                return datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S.%f").date() - today
+                # Check for type1 format
+                input_date = datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S.%f")
             except ValueError:
                 # Fallback to type2 format
-                return datetime.datetime.strptime(date_str, "%Y.%m.%d. %H:%M").date() - today
-        
-        data["from release"] = data["date"].apply(parse_date)
+                input_date = datetime.datetime.strptime(date_str, "%Y.%m.%d. %H:%M")
 
-        # # 2. 형태소 분석을 위한 Tokenizer (Okt 사용)
-        # okt = Okt()
+            # Calculate the difference in hours
+            difference = (input_date - reference_date).total_seconds() / 3600
 
-        # def tokenize(text):
-        #     return okt.morphs(text, stem=True)  # 어간 추출 포함
+            return round(difference)
+        data["from_release"] = data["date"].apply(parse_date)
 
-        # # 3. 모든 리뷰를 토크나이즈
-        # tokens = data["review"].apply(tokenize)
+        # 2. 형태소 분석을 위한 Tokenizer (Okt 사용)
+        okt = Okt()
 
-        # # 4. Word2Vec 모델 학습
-        # # Word2Vec 입력은 토큰화된 문장의 리스트로 구성됩니다.
-        # sentences = tokens.tolist()  # 토큰화된 문장 리스트
-        # model = Word2Vec(sentences, vector_size=100, window=5, min_count=1, workers=4)
+        def tokenize(text):
+            return okt.morphs(text, stem=True)  # 어간 추출 포함
 
-        # # 5. 문장 벡터화 함수 정의
-        # def sentence_to_vector(tokens):
-        #     vectors = [model.wv[word] for word in tokens if word in model.wv]  # 단어 벡터
-        #     if len(vectors) > 0:
-        #         return sum(vectors) / len(vectors)  # 평균 벡터 계산
-        #     else:
-        #         return [0] * model.vector_size  # 빈 문장은 0 벡터로 반환
+        # 3. 모든 리뷰를 토크나이즈
+        tokens = data["review"].apply(tokenize)
 
-        # # 6. 각 문장을 벡터화하여 word2vec 칼럼에 저장
-        # data["word2vec"] = tokens.apply(sentence_to_vector)
+        # 4. Word2Vec 모델 학습
+        # Word2Vec 입력은 토큰화된 문장의 리스트로 구성됩니다.
+        sentences = tokens.tolist()  # 토큰화된 문장 리스트
+        model = Word2Vec(sentences, vector_size=100, window=5, min_count=1, workers=4)
+
+        # 5. 문장 벡터화 함수 정의
+        def sentence_to_vector(tokens):
+            vectors = [model.wv[word] for word in tokens if word in model.wv]  # 단어 벡터
+            if len(vectors) > 0:
+                return sum(vectors) / len(vectors)  # 평균 벡터 계산
+            else:
+                return [0] * model.vector_size  # 빈 문장은 0 벡터로 반환
+
+        # 6. 각 문장을 벡터화하여 word2vec 칼럼에 저장
+        data["word2vec"] = tokens.apply(sentence_to_vector)
 
         self.data = data
 
