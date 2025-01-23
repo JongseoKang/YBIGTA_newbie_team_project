@@ -58,3 +58,6 @@ merge_JongseoKang.png
 merge_0haneu1.png
 <img width="1440" alt="merge_0haneu1" src="https://github.com/user-attachments/assets/1f0dd3f6-da04-4e1e-9b05-982c702232d4" />
 
+---
+# 영화 리뷰 데이터 분석
+
