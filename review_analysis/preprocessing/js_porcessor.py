@@ -22,6 +22,7 @@ class JSProcessor(BaseDataProcessor):
         
         data["date"] = data["date"].astype(str)
         data["review"] = data["review"].astype(str)
+        data["rating"] = data["rating"].astype(int)
         data = data[data["rating"] >= 1]
         data = data[data["rating"] <= 10]
 

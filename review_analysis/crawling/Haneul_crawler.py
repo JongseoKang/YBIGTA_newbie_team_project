@@ -165,9 +165,9 @@ class HNCrawler(BaseCrawler):
                 # 데이터 리스트에 저장
                 self.data.append({
                     "영화 제목": self.movie_title,
-                    "감상평": comment,
-                    "별점": star_score,
-                    "작성일": writing_date
+                    "review": comment,
+                    "rating": star_score,
+                    "date": writing_date
                 })
 
                 # 콘솔 출력
@@ -199,7 +199,7 @@ class HNCrawler(BaseCrawler):
 
         df = pd.DataFrame(self.data)
         # output_dir 밑에 CSV 파일 이름 설정
-        output_file: str = os.path.join(self.output_dir, "review_NaverMovie.csv")
+        output_file: str = os.path.join(self.output_dir, "reviews_NaverMovie.csv")
         df.to_csv(output_file, index=False, encoding="utf-8-sig")
 
         print(f"크롤링 데이터를 '{output_file}'에 저장했습니다.")

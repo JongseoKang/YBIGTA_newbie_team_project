@@ -13,17 +13,17 @@ class JSCrawler(BaseCrawler):
     def __init__(self, output_dir: str):
         '''Constructor for JSCrawler'''
         super().__init__(output_dir)
-        self.output_dir = os.path.join(output_dir, "review_Megabox.csv")
-        self.review_list = []
-        self.rating_list = []
-        self.date_list = []
-        self.driver = None
+        self.output_dir = os.path.join(output_dir, "reviews_Megabox.csv")
+        self.review_list:list[str] = []
+        self.rating_list:list[str] = []
+        self.date_list:list[datetime] = []
+        self.driver:webdriver.Chrome = webdriver.Chrome()
         self.url = f'https://www.megabox.co.kr/movie-detail/comment?rpstMovieNo=25000200'
 
     
     def start_browser(self) -> None:
         '''start chrome browser'''
-        driver = webdriver.Chrome()
+        driver:webdriver.Chrome = self.driver
         driver.maximize_window()
         driver.get(self.url)
         sleep(3)
@@ -62,20 +62,19 @@ class JSCrawler(BaseCrawler):
                 date_selector = f'{main_selector} > div.story-date > div > span'
                 date = soup.select(date_selector)
                 if date:
-                    dateVal = date[0].text
+                    dateVal:str = date[0].text
+                    result:datetime = datetime.now()
                     if dateVal.endswith("지금"):
-                        dateVal = datetime.now()
+                        result = datetime.now()
                     elif dateVal.endswith(" 분전"):
-                        dateVal = datetime.now() - timedelta(minutes=float(dateVal[:-3]))
+                        result = datetime.now() - timedelta(minutes=float(dateVal[:-3]))
                     elif dateVal.endswith(" 시간전"):
-                        dateVal = datetime.now() - timedelta(hours=float(dateVal[:-4]))
+                        result = datetime.now() - timedelta(hours=float(dateVal[:-4]))
                     elif dateVal.endswith(" 일전"):
-                        dateVal = datetime.now() - timedelta(days=float(dateVal[:-3]))
-                    else:
-                        dateVal = ""
-                    date_list.append(dateVal)
+                        result = datetime.now() - timedelta(days=float(dateVal[:-3]))
+                    date_list.append(result)
                 else:
-                    date_list.append("")
+                    date_list.append(datetime(0, 0, 0))
             next = 0
             if i <= 10:
                 next = i
