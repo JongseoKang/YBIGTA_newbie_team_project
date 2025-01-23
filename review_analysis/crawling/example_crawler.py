@@ -1,4 +1,4 @@
-from base_crawler import BaseCrawler
+from review_analysis.crawling.base_crawler import BaseCrawler
 
 class ExampleCrawler(BaseCrawler):
     def __init__(self, output_dir: str):
