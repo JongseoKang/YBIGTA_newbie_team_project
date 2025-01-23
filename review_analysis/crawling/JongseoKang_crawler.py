@@ -14,15 +14,18 @@ from time import sleep
 class JSCrawler(BaseCrawler):
     def __init__(self, output_dir: str):
         super().__init__(output_dir)
-        self.output_dir = output_dir
-        self.browser: webdriver.Chrome | None = None
+        self.output_dir = os.path.join(output_dir, "reviews_Megabox.csv")
+        self.review_list:list[str] = []
+        self.rating_list:list[str] = []
+        self.date_list:list[datetime] = []
+        self.driver:webdriver.Chrome = webdriver.Chrome()
+        self.url = f'https://www.megabox.co.kr/movie-detail/comment?rpstMovieNo=25000200'
 
     def start_browser(self) -> None:
-        """Initialize the Selenium WebDriver."""
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('disable-gpu')
-        # chrome_options.add_argument('headless')
-        self.browser = webdriver.Chrome(options=chrome_options)
+        '''start chrome browser'''
+        driver:webdriver.Chrome = self.driver
+        driver.maximize_window()
+        driver.get(self.url)
         sleep(3)
 
     def scrape_reviews(self) -> list[dict[str, Any]]:
@@ -57,16 +60,52 @@ class JSCrawler(BaseCrawler):
                         url_l=request.url.split('!2m2!1i')
                         break       
 
-        for number in tqdm(range(300)):
-            resp=requests.get((url_l[0]+'!2m2!1i'+'{}'+url_l[1]).format(number))
-            review = json.loads(resp.text[5:])
-            for user in range(10):
-                reviews.append({
-                    '리뷰':review[2][user][3],
-                    '날짜':review[2][user][1],
-                    '별점':review[2][user][4]})
-        
-        self.reviews = review
+        for i in range(1, 101):
+            html = driver.page_source
+            soup = bs(html, 'html.parser')
+            for j in range(2, 12):
+                main_selector = f'#contentData > div > div.movie-idv-story > ul > li:nth-child({j})'
+                
+                #contentData > div > div.movie-idv-story > ul > li:nth-child(2) 
+                text_selector = f'{main_selector} > div.story-area > div.story-box > div > div.story-cont > div.story-txt'
+                text = soup.select(text_selector)
+                if text:
+                    text_list.append(text[0].text)
+                else:
+                    text_list.append("")
+                
+                rating_selector= f'{main_selector} > div.story-area > div.story-box > div > div.story-cont > div.story-point > span'
+                rating = soup.select(rating_selector)
+                if rating:
+                    rating_list.append(rating[0].text)
+                else:
+                    rating_list.append("")
+                
+                date_selector = f'{main_selector} > div.story-date > div > span'
+                date = soup.select(date_selector)
+                if date:
+                    dateVal:str = date[0].text
+                    result:datetime = datetime.now()
+                    if dateVal.endswith("지금"):
+                        result = datetime.now()
+                    elif dateVal.endswith(" 분전"):
+                        result = datetime.now() - timedelta(minutes=float(dateVal[:-3]))
+                    elif dateVal.endswith(" 시간전"):
+                        result = datetime.now() - timedelta(hours=float(dateVal[:-4]))
+                    elif dateVal.endswith(" 일전"):
+                        result = datetime.now() - timedelta(days=float(dateVal[:-3]))
+                    date_list.append(result)
+                else:
+                    date_list.append(datetime(0, 0, 0))
+            next = 0
+            if i <= 10:
+                next = i
+            elif i % 10 == 0:
+                next = 12
+            else:
+                next = i % 10 + 2
+            driver.find_element(By.XPATH, f'//*[@id="contentData"]/div/div[4]/nav/a[{next}]').click()
+            sleep(2)
 
 
     def save_to_database(self) -> None:
