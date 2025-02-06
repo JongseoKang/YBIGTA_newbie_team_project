@@ -40,7 +40,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from app.user.user_schema import User
 
-from app.database.mysql_connection import engine
+from database.mysql_connection import engine
 
 Base = declarative_base()
 
