@@ -1,20 +1,19 @@
 # app/review/review_router.py
 from fastapi import APIRouter, HTTPException
 from pymongo import MongoClient
-from app.config import MONGODB_URI  # config에 mongodb 연결 문자열을 저장해두거나 직접 입력해도 됨
-from review_analysis.preprocessing.js_porcessor import JSProcessor
+from review_analysis.preprocessing.js_processor import JSProcessor
 # 필요하다면, 전처리 클래스 딕셔너리 등도 임포트합니다.
 from review_analysis.preprocessing.main import PREPROCESS_CLASSES
 
 router = APIRouter(prefix="/review", tags=["review"])
 
-# MongoDB 연결 설정 (예시)
+# MongoDB 연결 설정 
 client = MongoClient("mongodb+srv://haneul:gksmf3191%40@cluster0.feys2.mongodb.net/")
 db = client["review"]  # MongoDB 데이터베이스 이름
 
 @router.post("/preprocess/{site_name}")
 async def preprocess_review(site_name: str):
-    # site_name에 따라 컬렉션 이름 결정 (대소문자 주의)
+    # site_name에 따라 컬렉션 이름 결정
     if site_name.lower() == "megabox":
         collection_name = "reviews_Megabox"
     elif site_name.lower() == "navermovie":

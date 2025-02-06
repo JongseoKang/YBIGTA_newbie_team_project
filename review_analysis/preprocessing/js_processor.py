@@ -1,10 +1,16 @@
-from base_processor import BaseDataProcessor
+from os import path
 import os
 import datetime
 import pandas as pd
 from gensim.models import Word2Vec
 from konlpy.tag import Okt
 
+#이렇게 안하면 못찾길래 경로 설정을 했습니다
+import sys
+sys.path.append(path.abspath('./review_analysis/preprocessing'))
+print(sys.path)
+
+from base_processor import BaseDataProcessor
 
 
 # class JSProcessor(BaseDataProcessor):
