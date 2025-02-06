@@ -3,7 +3,7 @@ import glob
 from argparse import ArgumentParser
 from typing import Dict, Type
 from base_processor import BaseDataProcessor
-from js_porcessor import JSProcessor
+from js_processor import JSProcessor
 
 # 모든 preprocessing 클래스를 예시 형식으로 적어주세요. 
 # key는 "reviews_사이트이름"으로, value는 해당 처리를 위한 클래스
